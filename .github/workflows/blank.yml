@@ -66,7 +66,15 @@ jobs:
        tar tvf ${{ steps.files.outputs.ap }}
        tar tvf ${{ steps.files.outputs.bl }}
        tar tvf ${{ steps.files.outputs.cp }} || true
-       
+
+    - name: Remove unwanted files from AP and BL
+      if: steps.check.outputs.need_update == 1
+      run: |
+       tar vf ${{ steps.files.outputs.ap }} --delete boot.img.lz4 dtbo.img.lz4 recovery.img.lz4 super.img.lz4 userdata.img.lz4 vbmeta.img.lz4 vbmeta_samsung.img.lz4 meta-data
+       md5sum ${{ steps.files.outputs.ap }} | sed "s/  .*\//  /;s/\.md5$//" >> ${{ steps.files.outputs.ap }}
+       tar vf ${{ steps.files.outputs.bl }} --delete vbmeta.img.lz4
+       md5sum ${{ steps.files.outputs.bl }} | sed "s/  .*\//  /;s/\.md5$//" >> ${{ steps.files.outputs.bl }}
+
 
     - name: Update current version
       if: steps.check.outputs.need_update == 1
