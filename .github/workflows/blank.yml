@@ -38,11 +38,11 @@ jobs:
        echo ::set-output name=latest_modemversion::$latest_modem
        echo ::set-output name=need_update::$need_update
 
-    - name: Use Node.js 15
+    - name: Use Node.js 16
       if: steps.check.outputs.need_update == 1
       uses: actions/setup-node@v1
       with:
-        node-version: 15
+        node-version: 16
 
     - name: Install dependencies
       if: steps.check.outputs.need_update == 1
@@ -72,8 +72,9 @@ jobs:
       run: |
        tar vf ${{ steps.files.outputs.ap }} --delete boot.img.lz4 dtbo.img.lz4 recovery.img.lz4 super.img.lz4 userdata.img.lz4 vbmeta.img.lz4 vbmeta_system.img.lz4 meta-data
        md5sum ${{ steps.files.outputs.ap }} | sed "s/  .*\//  /;s/\.md5$//" >> ${{ steps.files.outputs.ap }}
-       tar vf ${{ steps.files.outputs.bl }} --delete vbmeta.img.lz4
        md5sum ${{ steps.files.outputs.bl }} | sed "s/  .*\//  /;s/\.md5$//" >> ${{ steps.files.outputs.bl }}
+#tar vf ${{ steps.files.outputs.bl }} --delete vbmeta.img.lz4
+       
 
     - name: Update current version
       if: steps.check.outputs.need_update == 1
